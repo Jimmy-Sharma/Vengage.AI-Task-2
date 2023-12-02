@@ -1,0 +1,47 @@
+.calendar-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 80%;
+    margin: auto;
+}
+
+.calendar-section {
+    flex: 1;
+}
+
+.message-section, .slots-section {
+    margin-top: 20px;
+}
+
+.time-buttons {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+}
+
+.slot-button {
+    margin: 5px;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.slot-button.not-available {
+    background-color: grey; 
+}
+
+@media (max-width: 1025px) {
+    .time-buttons {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .time-buttons {
+        display: grid;
+        grid-template-columns: repeat(1,1fr);
+    }
+}

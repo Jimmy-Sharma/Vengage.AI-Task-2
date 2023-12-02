@@ -1,47 +1,117 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Select from 'react-select';
 import Calendar from 'react-calendar';
+import toast from 'react-hot-toast';
+import '../Styling/Calender.css'
 
 const Calender = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedTime, setSelectedTime] = useState(null);
 
-    const timeOptions = [
-        { value: '08:00', label: '8:00 AM' },
-        { value: '08:30', label: '8:30 AM' },
-        { value: '08:45', label: '8:45 AM' },
-        { value: '09:00', label: '9:00 AM' },
-        { value: '12:00', label: '12:00 PM' },
-        { value: '12:30', label: '12:30 PM' },
-        { value: '05:00', label: '5:00 PM' },
-        { value: '05:30', label: '5:30 PM' },
-        { value: '08:30', label: '8:30 PM' },
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const isSunday = selectedDate.getDay() === 0;
+    const isWednesday = selectedDate.getDay() === 3;
+
+    const timeOptionsForOtherDays = [
+        '8:00 AM', '8:30 AM', '8:45 AM', '9:00 AM',
+        '12:00 PM', '1:00 PM', '3:00 PM', '5:30 PM', '8:30 PM'
     ];
 
+    const timeOptionsForWedDay = [
+        '8:00 AM', '8:30 AM', '8:45 AM', '9:00 AM',
+        '12:00 PM', '12:30 PM', '3:00 PM', '5:30 PM', '8:30 PM'
+    ];
+
+    let timeOptions = isSunday ? [] : timeOptionsForOtherDays;
+
+    timeOptions = isWednesday ? timeOptionsForWedDay : timeOptionsForOtherDays;
+
+    const handleSlotClick = (time) => {
+        const isNotAvailableForWednesday = isWednesday && time >= '12:30 PM' && time <= '4:30 PM';
+
+        if (!isWednesday && time >= '12:30 PM' && time <= '1:00 PM') {
+            console.log('Slots not available on clicking on it');
+            toast.error(`Selected time slot: ${time} is not available`, {
+                style: {
+                  padding: "20px 25px",
+                  fontWeight: "bold",
+                  borderRadius: "50px",
+                },
+              });
+        } else if (isNotAvailableForWednesday) {
+            console.log(`Selected time slot: ${time} is not available`);
+            toast.error(`Selected time slot: ${time} is not available`, {
+                style: {
+                  padding: "20px 25px",
+                  fontWeight: "bold",
+                  borderRadius: "50px",
+                },
+              });
+        } else {
+            console.log(`Selected time slot: ${time} is available`);
+            toast.success(`Selected time slot: ${time} is available`, {
+                style: {
+                  padding: "20px 25px",
+                  fontWeight: "bold",
+                  borderRadius: "50px",
+                },
+              });
+        }
+    };
+
     return (
-        <div style={{ display: 'grid' , width:'40%', margin:'auto'}}>
-            <div style={{ flex: 1 }}>
-                <h2>Select Date</h2>
+        <div className="calendar-container">
+            <div className="calendar-section">
+                <h1>Select Date</h1>
                 <Calendar onChange={(date) => setSelectedDate(date)} value={selectedDate} />
             </div>
 
-            <div style={{ marginLeft: '20px' }}>
-                <h2>Select Time</h2>
-                <Select
-                    options={timeOptions}
-                    value={selectedTime}
-                    onChange={(time) => setSelectedTime(time)}
-                    placeholder="Select a time"
-                />
-            </div>
-
-            {selectedDate && selectedTime && (
-                <div style={{ marginTop: '20px' }}>
-                    <p>Selected Date: {selectedDate.toDateString()}</p>
-                    <p>Selected Time: {selectedTime.label}</p>
+            {isSunday ? (
+                <div>
+                    <div className="slots-section">
+                        <h2>Selected Date: {selectedDate.toDateString()}</h2>
+                    </div>
+                    <div className="message-section">
+                        <h3>No slots available on Sundays (Holiday)</h3>
+                    </div>
                 </div>
+            ) : (
+                selectedDate && (
+                    <div className="slots-section">
+                        <h2>Selected Date: {selectedDate.toDateString()}</h2>
+                        {isWednesday ? (
+                            <div>
+                                <h3>Available Time Slots for Wednesday:</h3>
+                                <div className="time-buttons">
+                                    {timeOptionsForWedDay.map((time, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleSlotClick(time)}
+                                            className={`slot-button ${time >= '12:30 PM' && time <= '4:30 PM' ? 'not-available' : ''}`}
+                                        >
+                                            {time}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <h3>Available Time Slots for other days:</h3>
+                                <div className="time-buttons">
+                                    {timeOptions.map((time, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleSlotClick(time)}
+                                            className={`slot-button ${time >= '12:30 PM' && time <= '1:00 PM' ? 'not-available' : ''}`}
+                                        >
+                                            {time}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )
             )}
         </div>
     );
