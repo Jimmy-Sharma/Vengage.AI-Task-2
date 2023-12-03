@@ -14,13 +14,13 @@ const Calender = () => {
     const isSaturday = selectedDate.getDay() === 6;
 
     const timeOptionsForOtherDays = [
-        '8:00 AM', '8:30 AM', '8:45 AM', '9:00 AM',
-        '12:00 PM', '1:00 PM', '3:00 PM', '5:30 PM', '6:30 PM'
+        '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+        '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
     ];
 
     const timeOptionsForWedDay = [
-        '8:00 AM', '8:30 AM', '8:45 AM', '9:00 AM',
-        '12:00 PM', '12:30 PM', '3:00 PM', '5:30 PM', '6:30 PM'
+        '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+        '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:30 PM'
     ];
 
     let timeOptions = isSunday ? [] : timeOptionsForOtherDays;
@@ -28,7 +28,7 @@ const Calender = () => {
 
     const handleSlotClick = (time) => {
         console.log(isSunday, isWednesday, isSaturday)
-        const isNotAvailableForWednesday = isWednesday && time >= '12:30 PM' && time <= '4:30 PM';
+        const isNotAvailableForWednesday = isWednesday && time >= '12:30 PM' && time < '4:30 PM';
         const isNotAvailableForSaturday = isSaturday && time >= '12:00 PM' && time <= '7:00 PM';
 
         if (!isWednesday && !isSaturday && time >= '12:30 PM' && time <= '1:00 PM') {
@@ -83,7 +83,7 @@ const Calender = () => {
                         <h2>Selected Date: {selectedDate.toDateString()}</h2>
                     </div>
                     <div className="message-section">
-                        <h3>No slots available on Sundays (Holiday)</h3>
+                        <h3>No slots available on Sunday (Holiday)</h3>
                     </div>
                 </div>
             ) : (
@@ -92,13 +92,13 @@ const Calender = () => {
                         <h2>Selected Date: {selectedDate.toDateString()}</h2>
                         {isWednesday || isSaturday ? (
                             <div>
-                                <h3>Available Time Slots</h3>
+                                <h3>Available Time Slots:</h3>
                                 <div className="time-buttons">
                                     {timeOptionsForWedDay.map((time, index) => (
                                         <button
                                             key={index}
                                             onClick={() => handleSlotClick(time)}
-                                            className={`slot-button ${isWednesday && time >= '12:30 PM' && time <= '4:30 PM' ? 'not-available' :'' } ${isSaturday && time >= '12:00 PM' && time <= '7:00 PM' ? 'not-available-saturday' : ''}`}
+                                            className={`slot-button ${isWednesday && time >= '12:30 PM' && time < '4:30 PM' ? 'not-available' :'' } ${isSaturday && time >= '12:00 PM' && time <= '7:00 PM' ? 'not-available-saturday' : ''}`}
                                         >
                                             {time}
                                         </button>
@@ -107,7 +107,7 @@ const Calender = () => {
                             </div>
                         ) : (
                             <div>
-                                <h3>Available Time Slots for other days:</h3>
+                                <h3>Available Time Slots:</h3>
                                 <div className="time-buttons">
                                     {timeOptions.map((time, index) => (
                                         <button
