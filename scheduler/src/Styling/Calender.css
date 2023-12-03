@@ -32,6 +32,10 @@
     background-color: grey; 
 }
 
+.slot-button.not-available-saturday {
+    background-color: grey;
+}
+
 @media (max-width: 1025px) {
     .time-buttons {
         display: grid;
